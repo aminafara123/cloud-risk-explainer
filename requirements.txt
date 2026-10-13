@@ -1,0 +1,3 @@
+# Runtime uses the Python standard library only (urllib, json, dataclasses).
+# The one dependency is the test runner.
+pytest>=8,<9

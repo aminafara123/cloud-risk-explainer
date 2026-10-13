@@ -1,0 +1,38 @@
+[
+  {
+    "id": "native-s3-01",
+    "title": "Public S3 bucket exposes data exports",
+    "service": "s3",
+    "severity": "critical",
+    "resource": "arn:aws:s3:::pii-exports",
+    "description": "Bucket pii-exports is publicly accessible to the internet via a public-read bucket policy.",
+    "remediation_hint": "Enable S3 Block Public Access at the account and bucket level."
+  },
+  {
+    "id": "native-iam-02",
+    "title": "IAM role trusts a wildcard principal with Action: *",
+    "service": "iam",
+    "severity": "high",
+    "resource": "arn:aws:iam::123456789012:role/ci-runner",
+    "description": "Role ci-runner grants Action: * on Resource: * and is overly permissive.",
+    "remediation_hint": "Scope the role's inline policy to the specific actions it needs."
+  },
+  {
+    "id": "native-ec2-03",
+    "title": "Security group opens SSH to the world",
+    "service": "ec2",
+    "severity": "high",
+    "resource": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-0native",
+    "description": "Security group sg-0native allows unrestricted ingress from 0.0.0.0/0 to port 22.",
+    "remediation_hint": "Restrict SSH ingress to known admin CIDRs."
+  },
+  {
+    "id": "native-kms-04",
+    "title": "KMS key rotation disabled",
+    "service": "kms",
+    "severity": "medium",
+    "resource": "arn:aws:kms:us-east-1:123456789012:key/cccc3333-4444-5555-6666-777788889999",
+    "description": "Automatic key rotation is not enabled for the customer managed key.",
+    "remediation_hint": "Enable automatic annual key rotation."
+  }
+]

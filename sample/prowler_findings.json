@@ -1,0 +1,292 @@
+[
+  {
+    "CheckID": "s3_bucket_public_access",
+    "CheckTitle": "Ensure S3 buckets are not publicly accessible",
+    "ServiceName": "s3",
+    "Severity": "critical",
+    "Status": "FAIL",
+    "Region": "us-east-1",
+    "ResourceId": "customer-exports",
+    "ResourceArn": "arn:aws:s3:::customer-exports",
+    "StatusExtended": "S3 bucket customer-exports is publicly accessible: a public-read ACL grants READ to AllUsers, so the data is exposed to the internet.",
+    "Risk": "Anyone on the internet can list and download objects from this bucket.",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Enable S3 Block Public Access at the account and bucket level and remove the public-read ACL.",
+        "Url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html"
+      }
+    }
+  },
+  {
+    "CheckID": "s3_bucket_default_encryption",
+    "CheckTitle": "Ensure S3 buckets have server-side encryption enabled",
+    "ServiceName": "s3",
+    "Severity": "medium",
+    "Status": "FAIL",
+    "Region": "us-east-1",
+    "ResourceId": "app-logs",
+    "ResourceArn": "arn:aws:s3:::app-logs",
+    "StatusExtended": "Server-side encryption is not enabled for bucket app-logs, so objects are stored unencrypted at rest.",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Enable default SSE-S3 or SSE-KMS encryption on the bucket.",
+        "Url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/default-bucket-encryption.html"
+      }
+    }
+  },
+  {
+    "CheckID": "s3_bucket_server_access_logging_enabled",
+    "CheckTitle": "Ensure S3 bucket access logging is enabled",
+    "ServiceName": "s3",
+    "Severity": "low",
+    "Status": "FAIL",
+    "Region": "us-east-1",
+    "ResourceId": "app-logs",
+    "ResourceArn": "arn:aws:s3:::app-logs",
+    "StatusExtended": "Server access logging is not configured for bucket app-logs.",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Enable server access logging and ship logs to a dedicated logging bucket.",
+        "Url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerLogs.html"
+      }
+    }
+  },
+  {
+    "CheckID": "iam_policy_no_administrative_privileges",
+    "CheckTitle": "Ensure IAM policies do not grant full administrative privileges",
+    "ServiceName": "iam",
+    "Severity": "high",
+    "Status": "FAIL",
+    "Region": "us-east-1",
+    "ResourceId": "devops-power",
+    "ResourceArn": "arn:aws:iam::123456789012:policy/devops-power",
+    "StatusExtended": "Customer managed policy devops-power grants Action: * on Resource: * (AdministratorAccess equivalent), which is overly permissive.",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Scope the policy to the specific actions and resources the role needs, following least privilege.",
+        "Url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html"
+      }
+    }
+  },
+  {
+    "CheckID": "iam_user_mfa_enabled_console_access",
+    "CheckTitle": "Ensure MFA is enabled for IAM users with console access",
+    "ServiceName": "iam",
+    "Severity": "medium",
+    "Status": "FAIL",
+    "Region": "us-east-1",
+    "ResourceId": "ci-deploy",
+    "ResourceArn": "arn:aws:iam::123456789012:user/ci-deploy",
+    "StatusExtended": "IAM user ci-deploy has console access enabled but no MFA device registered.",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Require and register an MFA device for every user with console access.",
+        "Url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html"
+      }
+    }
+  },
+  {
+    "CheckID": "iam_rotate_access_key_90_days",
+    "CheckTitle": "Ensure access keys are rotated every 90 days or less",
+    "ServiceName": "iam",
+    "Severity": "low",
+    "Status": "FAIL",
+    "Region": "us-east-1",
+    "ResourceId": "legacy-svc",
+    "ResourceArn": "arn:aws:iam::123456789012:user/legacy-svc",
+    "StatusExtended": "Access key for user legacy-svc has not been rotated in 412 days.",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Rotate the access key and delete unused keys.",
+        "Url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html"
+      }
+    }
+  },
+  {
+    "CheckID": "iam_no_root_access_key",
+    "CheckTitle": "Ensure no root account access key exists",
+    "ServiceName": "iam",
+    "Severity": "high",
+    "Status": "FAIL",
+    "Region": "us-east-1",
+    "ResourceId": "<root_account>",
+    "ResourceArn": "arn:aws:iam::123456789012:root",
+    "StatusExtended": "The root account has an active access key, which should never exist.",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Delete the root account access key and use IAM roles/users instead.",
+        "Url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html"
+      }
+    }
+  },
+  {
+    "CheckID": "ec2_securitygroup_allow_ingress_from_internet_to_port_22",
+    "CheckTitle": "Ensure no security groups allow ingress from 0.0.0.0/0 to port 22",
+    "ServiceName": "ec2",
+    "Severity": "high",
+    "Status": "FAIL",
+    "Region": "us-east-1",
+    "ResourceId": "sg-0a1b2c3d",
+    "ResourceArn": "arn:aws:ec2:us-east-1:123456789012:security-group/sg-0a1b2c3d",
+    "StatusExtended": "Security group sg-0a1b2c3d allows unrestricted ingress from 0.0.0.0/0 to port 22 (SSH), leaving it open to the world.",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Restrict SSH ingress to known admin CIDRs or move to SSM Session Manager.",
+        "Url": "https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html"
+      }
+    }
+  },
+  {
+    "CheckID": "ec2_securitygroup_allow_ingress_from_internet_to_port_3389",
+    "CheckTitle": "Ensure no security groups allow ingress from 0.0.0.0/0 to port 3389",
+    "ServiceName": "ec2",
+    "Severity": "medium",
+    "Status": "FAIL",
+    "Region": "eu-west-1",
+    "ResourceId": "sg-0b2c3d4e",
+    "ResourceArn": "arn:aws:ec2:eu-west-1:123456789012:security-group/sg-0b2c3d4e",
+    "StatusExtended": "Security group sg-0b2c3d4e allows ingress from 0.0.0.0/0 to port 3389 (RDP).",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Restrict RDP ingress to known admin CIDRs or use a bastion.",
+        "Url": "https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html"
+      }
+    }
+  },
+  {
+    "CheckID": "ec2_ebs_volume_encryption",
+    "CheckTitle": "Ensure EBS volumes are encrypted at rest",
+    "ServiceName": "ec2",
+    "Severity": "medium",
+    "Status": "FAIL",
+    "Region": "us-east-1",
+    "ResourceId": "vol-0123456789abcdef0",
+    "ResourceArn": "arn:aws:ec2:us-east-1:123456789012:volume/vol-0123456789abcdef0",
+    "StatusExtended": "EBS volume vol-0123456789abcdef0 is not encrypted, so data at rest is unencrypted.",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Enable EBS default encryption and re-create the volume from an encrypted snapshot.",
+        "Url": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html"
+      }
+    }
+  },
+  {
+    "CheckID": "rds_instance_no_public_access",
+    "CheckTitle": "Ensure RDS instances are not publicly accessible",
+    "ServiceName": "rds",
+    "Severity": "critical",
+    "Status": "FAIL",
+    "Region": "us-east-1",
+    "ResourceId": "prod-db",
+    "ResourceArn": "arn:aws:rds:us-east-1:123456789012:db:prod-db",
+    "StatusExtended": "RDS instance prod-db is publicly accessible from the internet and storage encryption is not enabled.",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Set PubliclyAccessible to false, place the instance in private subnets, and enable storage encryption.",
+        "Url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.RDSSecurityGroups.html"
+      }
+    }
+  },
+  {
+    "CheckID": "rds_instance_backup_enabled",
+    "CheckTitle": "Ensure RDS automated backups are enabled",
+    "ServiceName": "rds",
+    "Severity": "low",
+    "Status": "FAIL",
+    "Region": "us-east-1",
+    "ResourceId": "analytics-db",
+    "ResourceArn": "arn:aws:rds:us-east-1:123456789012:db:analytics-db",
+    "StatusExtended": "Automated backups are disabled for RDS instance analytics-db (retention period 0).",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Set a backup retention period of at least 7 days.",
+        "Url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html"
+      }
+    }
+  },
+  {
+    "CheckID": "cloudtrail_multi_region_enabled",
+    "CheckTitle": "Ensure CloudTrail is enabled in all regions",
+    "ServiceName": "cloudtrail",
+    "Severity": "high",
+    "Status": "FAIL",
+    "Region": "us-east-1",
+    "ResourceId": "no-trail",
+    "ResourceArn": "arn:aws:cloudtrail:us-east-1:123456789012:trail/none",
+    "StatusExtended": "CloudTrail is not enabled in all regions; management event logging disabled for 3 active regions.",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Create a multi-region trail capturing management and data events.",
+        "Url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-create-a-trail-using-the-console-first-time.html"
+      }
+    }
+  },
+  {
+    "CheckID": "cloudtrail_log_file_validation_enabled",
+    "CheckTitle": "Ensure CloudTrail log file validation is enabled",
+    "ServiceName": "cloudtrail",
+    "Severity": "medium",
+    "Status": "FAIL",
+    "Region": "us-east-1",
+    "ResourceId": "org-trail",
+    "ResourceArn": "arn:aws:cloudtrail:us-east-1:123456789012:trail/org-trail",
+    "StatusExtended": "Log file integrity validation is not enabled for trail org-trail, so tampering cannot be detected.",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Enable log file validation on the trail.",
+        "Url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html"
+      }
+    }
+  },
+  {
+    "CheckID": "kms_cmk_rotation_enabled",
+    "CheckTitle": "Ensure rotation is enabled for customer-managed KMS keys",
+    "ServiceName": "kms",
+    "Severity": "medium",
+    "Status": "FAIL",
+    "Region": "us-east-1",
+    "ResourceId": "alias/app-data",
+    "ResourceArn": "arn:aws:kms:us-east-1:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+    "StatusExtended": "Automatic key rotation is not enabled for KMS key alias/app-data.",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Enable automatic annual key rotation for the customer-managed key.",
+        "Url": "https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html"
+      }
+    }
+  },
+  {
+    "CheckID": "kms_key_not_publicly_accessible",
+    "CheckTitle": "Ensure KMS key policies do not allow public access",
+    "ServiceName": "kms",
+    "Severity": "high",
+    "Status": "FAIL",
+    "Region": "us-east-1",
+    "ResourceId": "alias/exports",
+    "ResourceArn": "arn:aws:kms:us-east-1:123456789012:key/abcd1234-56ef-78ab-90cd-ef1234567890",
+    "StatusExtended": "KMS key alias/exports has a key policy allowing kms:* for Principal * (public access), which is overly permissive.",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Scope the key policy to specific principals and remove the wildcard principal.",
+        "Url": "https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html"
+      }
+    }
+  },
+  {
+    "CheckID": "s3_bucket_object_versioning",
+    "CheckTitle": "Ensure S3 bucket versioning is enabled",
+    "ServiceName": "s3",
+    "Severity": "low",
+    "Status": "PASS",
+    "Region": "us-east-1",
+    "ResourceId": "app-logs",
+    "ResourceArn": "arn:aws:s3:::app-logs",
+    "StatusExtended": "Versioning is enabled for bucket app-logs.",
+    "Remediation": {
+      "Recommendation": {
+        "Text": "No action required.",
+        "Url": ""
+      }
+    }
+  }
+]
