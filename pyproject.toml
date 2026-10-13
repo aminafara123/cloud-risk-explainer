@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cloud-risk-explainer"
+version = "0.1.0"
+description = "Turns a raw dump of AWS security findings into a prioritized, plain-English risk report that an exec or a client can actually act on."
+authors = [{name = "Al Amin Bashir Afara", email = "aminafara123@gmail.com"}]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+cloud-risk-explainer = "cloud_risk_explainer.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["cloud_risk_explainer"]

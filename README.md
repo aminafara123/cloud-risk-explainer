@@ -31,7 +31,16 @@ flowchart LR
   style D fill:#fff3e0,stroke:#e6a700
 ```
 
-## Quickstart
+## Install
+
+```bash
+pipx install git+https://github.com/aminafara123/cloud-risk-explainer
+cloud-risk-explainer -i findings.json -o report.md --no-llm   # offline, deterministic
+```
+
+From a local clone you can also just `pip install .` into the current environment.
+
+## Quickstart (clone + make)
 
 ```bash
 # 1) install (only dependency is pytest; the tool itself is pure stdlib)
